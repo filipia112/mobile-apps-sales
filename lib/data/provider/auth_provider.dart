@@ -9,6 +9,8 @@ class AuthProvider with ChangeNotifier {
   String? _username;
   String? _roleUser;
   DateTime? _updatedAt;
+  String? _errorMessage;
+  bool _isLoading = false;
 
   String? get token => _token;
   String? get userId => _userId;
@@ -16,12 +18,43 @@ class AuthProvider with ChangeNotifier {
   String? get username => _username;
   String? get roleUser => _roleUser;
   DateTime? get updatedAt => _updatedAt;
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _isLoading;
 
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
-  bool get isAuthenticated => _token != null;
+  bool _isAuthenticated = false;
+  bool get isAuthenticated => _isAuthenticated;
 
-  Future<void> login(AuthModel authModel) async {
+  set errorMessage(String? message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
+
+  AuthProvider() {
+    checkAuthStatus();
+  }
+
+  Future<void> checkAuthStatus() async {
+    _token = await SharedPrefHelper.getToken();
+    _userId = await SharedPrefHelper.getUserId();
+
+    if (_token != null && _userId != null) {
+      _isAuthenticated = true;
+    } else {
+      _isAuthenticated = false;
+    }
+    notifyListeners();
+  }
+
+  Future<bool> login(AuthModel authModel) async {
+    _errorMessage = null;
     try {
+      _isLoading = true;
+      notifyListeners();
       final apiService = ApiService();
       final response = await apiService.login(authModel);
 
@@ -30,56 +63,71 @@ class AuthProvider with ChangeNotifier {
 
       await SharedPrefHelper.saveToken(_token!);
       await SharedPrefHelper.saveUserId(_userId!);
-
+      _isAuthenticated = true;
+      _isLoading = false;
       notifyListeners();
+      return true;
     } catch (e) {
-      throw Exception('Login failed: $e');
+      _isLoading = false;
+      errorMessage = "Gagal memuat data";
+      return false;
     }
   }
 
-
   Future<void> logout() async {
+    _errorMessage = null;
+    _isAuthenticated = false;
+    _token = null;
+    _userId = null;
+    _isLoading = true;
+    notifyListeners();
+    await Future.delayed(const Duration(seconds: 2));
     try {
       final token = await SharedPrefHelper.getToken();
 
       if (token == null) {
-        throw Exception('Token not found');
+        _isLoading = false;
+        errorMessage = "Token tidak ditemukan";
+        return;
       }
 
       final apiService = ApiService();
       await apiService.logout(token);
-
-      _token = null;
-      _userId = null;
-
       await SharedPrefHelper.clearToken();
       await SharedPrefHelper.clearUserId();
 
+      _isLoading = false;
       notifyListeners();
     } catch (e) {
-      throw Exception('Logout failed: $e');
+      _isLoading = false;
+      errorMessage = "Gagal memuat data";
     }
   }
+
   Future<void> loadUserData() async {
+    _errorMessage = null;
+    _isLoading = true;
+    notifyListeners();
     final token = await SharedPrefHelper.getToken();
     final userId = await SharedPrefHelper.getUserId();
-
     if (token != null && userId != null) {
       try {
         final apiService = ApiService();
         final userModel = await apiService.getUser(token, userId);
-
-        _token = token;
-        _userId = userId;
         _nmUser = userModel.nmUser;
         _username = userModel.username;
         _roleUser = userModel.roleUser;
         _updatedAt = userModel.updatedAt;
 
+        _isLoading = false;
         notifyListeners();
       } catch (e) {
-        throw Exception('Failed to load user data: $e');
+        _isLoading = false;
+        errorMessage = "Gagal memuat data";
       }
+    } else {
+      _isLoading = false;
+      errorMessage = "Token atau UserId tidak ditemukan. Data tidak ditemukan.";
     }
   }
 }

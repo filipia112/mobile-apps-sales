@@ -4,7 +4,8 @@ import '../../common/app_string.dart';
 import '../../common/constants.dart';
 import '../../data/model/auth_model.dart';
 import '../../data/provider/auth_provider.dart';
-import '../../utils/shared_preferences.dart';
+
+import '../widgets/widget_loading.dart';
 import 'home/home_screen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,54 +18,51 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
-  @override
-  void initState() {
-    super.initState();
-    _login();
-  }
-
+  bool _isPasswordVisible = false;
   Future<void> _login() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      _showSnackBar(
+        'Username dan Password tidak boleh kosong.',
+        Colors.red,
+      );
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
-    final authModel = AuthModel(
-      username: usernameController.text,
-      passUser: passwordController.text,
-    );
+
+    final authModel = AuthModel(username: username, passUser: password);
 
     try {
-      await Provider.of<AuthProvider>(context, listen: false).login(authModel);
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final success = await authProvider.login(authModel);
+      if (success) {
+        final token = authProvider.token;
+        final userId = authProvider.userId;
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Login Successful',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-        await Future.delayed(const Duration(seconds: 1));
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        if (token != null && userId != null && mounted) {
+          _showSnackBar('Login Berhasil', Colors.green);
+          await Future.delayed(const Duration(seconds: 1));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        }
+      } else {
+        _showSnackBar(
+          'Username atau Kata Sandi Anda salah.',
+          Colors.red,
         );
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Login Failed',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _showSnackBar(
+        'Terjadi kesalahan, coba lagi nanti.',
+        Colors.red,
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -73,6 +71,19 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
+  void _showSnackBar(String message, Color backgroundColor) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,14 +156,21 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             TextField(
               controller: passwordController,
-              obscureText: true,
+              obscureText: !_isPasswordVisible,
               decoration: InputDecoration(
                 hintText: AppString.textPassword,
                 hintStyle: kSubtitle.copyWith(color: Colors.black38),
                 prefixIcon: const Icon(Icons.lock, color: kPrimaryBlue),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.visibility_off, color: kPrimaryBlue),
-                  onPressed: () {},
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: kPrimaryBlue,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -170,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
             isLoading
-                ? const CircularProgressIndicator()
+                ? const LoadingWidget()
                 : ElevatedButton(
               onPressed: _login,
               style: ElevatedButton.styleFrom(
@@ -198,6 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
 
   Widget _buildFooter(BuildContext context) {
     return Positioned(

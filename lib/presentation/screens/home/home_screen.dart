@@ -2,11 +2,16 @@ import 'package:apps_sales/presentation/screens/account_screen.dart';
 import 'package:apps_sales/presentation/screens/customer_screen.dart';
 import 'package:apps_sales/presentation/screens/stock_transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../common/app_string.dart';
 import '../../../common/constants.dart';
+import '../../../data/provider/auth_provider.dart';
+import '../../../data/provider/menu_product_provider.dart';
+import '../login_screen.dart';
 import 'home_content.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -22,8 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.checkAuthStatus();
+      if (authProvider.isAuthenticated) {
+        Provider.of<MenuProductProvider>(context, listen: false).fetchMenuProducts();
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    });
+  }
+  @override
   Widget build(BuildContext context) {
-    const double navBarHeight = 75;
+    const double navBarHeight = 70;
     return Scaffold(
       body: _pages[_currentIndex],
       backgroundColor: kWhite,
@@ -78,13 +99,15 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: Colors.white, size: 16),
           const SizedBox(width: 4),
           Text(
             label,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Colors.white, fontSize: 12 ),
           ),
         ],
       ),

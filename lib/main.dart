@@ -1,14 +1,17 @@
 import 'package:apps_sales/presentation/screens/home/home_screen.dart';
-import 'package:apps_sales/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'common/app_string.dart';
 import 'data/provider/auth_provider.dart';
+import 'data/provider/customer_provider.dart';
+import 'data/provider/menu_product_provider.dart';
 void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => CustomerProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => MenuProductProvider()),
       ],
       child: const MyApp(),
     ),
@@ -25,17 +28,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: _checkAuth(context),
+      home: const HomeScreen(),
     );
   }
 
-  Widget _checkAuth(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    if (authProvider.token != null && authProvider.userId != null) {
-      return const HomeScreen();
-    } else {
-      return const LoginScreen();
-    }
-  }
 }
 

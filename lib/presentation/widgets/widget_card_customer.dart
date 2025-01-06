@@ -1,156 +1,151 @@
+import 'package:apps_sales/data/model/customer_model.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import '../../common/constants.dart';
+import '../../data/provider/customer_provider.dart';
+import '../screens/detail_customer_screen.dart';
+
+class CustomerList extends StatelessWidget {
+  const CustomerList({super.key});
+  @override
+  Widget build(BuildContext context) {
+    var customerProvider = Provider.of<CustomerProvider>(context);
+    if (customerProvider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (customerProvider.errorMessage != null) {
+      return Center(
+        child: Text(customerProvider.errorMessage!),
+      );
+    }
+    List<CustomerModel> displayedCustomers = customerProvider.customers?.data ?? [];
+    if (displayedCustomers.isEmpty) {
+      return const Center(
+        child: Text('Tidak ada data pelanggan.'),
+      );
+    }
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: displayedCustomers.length,
+      itemBuilder: (context, index) {
+        final customer = displayedCustomers[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: CustomerCard(
+            nmPelanggan: customer.nmPelanggan,
+            noPelanggan: customer.noPelanggan,
+            alamatPelanggan: customer.alamatPelanggan,
+            customer: customer,
+            isVerified: customer.isVerified,
+          ),
+        );
+      },
+    );
+  }
+}
+
+
 class CustomerCard extends StatelessWidget {
-  final String nameCustomer;
-  final String addressCustomer;
-  final String noCDOB;
+  final String nmPelanggan;
+  final String noPelanggan;
+  final String alamatPelanggan;
+  final bool isVerified;
+  final CustomerModel customer;
 
   const CustomerCard({
-    Key? key,
-    required this.nameCustomer,
-    required this.addressCustomer,
-    required this.noCDOB,
-  }) : super(key: key);
+    super.key,
+    required this.nmPelanggan,
+    required this.noPelanggan,
+    required this.alamatPelanggan,
+    required this.customer,
+    required this.isVerified
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: kOffWhite,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          nameCustomer,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: kBodyText.copyWith(color: kLightGrey),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 90,
-                        height: 36,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.lightGreen,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.green,
-                              width: 2
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Verifikasi',
-                                style: kHeading6.copyWith(color: kWhite, fontSize: 14)
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          addressCustomer,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: kHeading6.copyWith(fontSize: 14),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    noCDOB,
-                    style: kHeading6.copyWith(color: kPrimaryBlue, fontSize: 16),
-                  ),
-                ],
-              ),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CustomerDetailScreen(customer: customer),
             ),
-          ],
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: kOffWhite,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            nmPelanggan,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: kBodyText.copyWith(color: kLightGrey),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 36,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isVerified ? Colors.lightGreen : Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: isVerified ? Colors.green : Colors.grey,
+                                  width: 2
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                isVerified ? 'Valid' : 'Belum Valid',
+                                style: kHeading6.copyWith(color: kWhite, fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            alamatPelanggan,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: kHeading6.copyWith(fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      noPelanggan,
+                      style: kHeading6.copyWith(color: kPrimaryBlue, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class CustomerList extends StatelessWidget {
-  final List<Map<String, String>> Customers = [
-    {
-      'nmPelanggan': 'RS ABC',
-      'addressCustomer': 'Jalan Kenung No 29',
-      'noCDOB': '12100310-130301931'
-    },
-    {
-      'nmPelanggan': 'RS XYZ',
-      'addressCustomer': 'Jalan Merdeka No 5',
-      'noCDOB': '12100310-130301932'
-    },
-    {
-      'nmPelanggan': 'RS DEF',
-      'addressCustomer': 'Jalan Raya No 12',
-      'noCDOB': '12100310-130301933'
-    },
-    {
-      'nmPelanggan': 'RS GHI',
-      'addressCustomer': 'Jalan Sudirman No 7',
-      'noCDOB': '12100310-130301934'
-    },
-    {
-      'nmPelanggan': 'RS GHI',
-      'addressCustomer': 'Jalan Sudirman No 7',
-      'noCDOB': '12100310-130301934'
-    },
-    {
-      'nmPelanggan': 'RS GHI',
-      'addressCustomer': 'Jalan Sudirman No 7',
-      'noCDOB': '12100310-130301934'
-    },
-    {
-      'nmPelanggan': 'RS GHI',
-      'addressCustomer': 'Jalan Sudirman No 7',
-      'noCDOB': '12100310-130301934'
-    },
-    {
-      'nmPelanggan': 'RS GHI',
-      'addressCustomer': 'Jalan Sudirman No 7',
-      'noCDOB': '12100310-130301934'
-    },
-    {
-      'nmPelanggan': 'RS GHI',
-      'addressCustomer': 'Jalan Sudirman No 7',
-      'noCDOB': '12100310-130301934'
-    },
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: Customers.length,
-      itemBuilder: (context, index) {
-        return CustomerCard(
-          nameCustomer: Customers[index]['nmPelanggan']!,
-          addressCustomer: Customers[index]['addressCustomer']!,
-          noCDOB: Customers[index]['noCDOB']!,
-        );
-      },
     );
   }
 }

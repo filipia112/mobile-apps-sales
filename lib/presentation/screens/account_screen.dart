@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../common/app_string.dart';
 import '../../common/constants.dart';
 import '../../data/provider/auth_provider.dart';
+import '../widgets/widget_loading.dart';
 import 'login_screen.dart';
 import 'package:intl/intl.dart';
 class AccountScreen extends StatefulWidget {
@@ -26,9 +27,10 @@ class _AccountScreenState extends State<AccountScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final errorMessage = Provider.of<AuthProvider>(context, listen: false).errorMessage ?? "Gagal memuat data pengguna";
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Gagal memuat data pengguna"),
+          SnackBar(
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
           ),
         );
@@ -50,13 +52,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget _buildContent(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-
-    if (authProvider.token == null) {
-      return const Center(
-        child: Text("Menunggu token..."),
-      );
-    }
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +134,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Terakhir Login:",
+                      "Terakhir Login",
                       style: kBodyText.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Column(
@@ -163,7 +158,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   ],
                 ),
                 const SizedBox(height: 160),
-                Row(
+                authProvider.isLoading
+                    ? const Center(child: LoadingWidget())
+                    : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
@@ -176,7 +173,13 @@ class _AccountScreenState extends State<AccountScreen> {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () async {
+                          setState(() {
+                            authProvider.isLoading = true;
+                          });
                           await Provider.of<AuthProvider>(context, listen: false).logout();
+                          setState(() {
+                            authProvider.isLoading = false;
+                          });
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -202,8 +205,4 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
     );
   }
-
-
 }
-
-

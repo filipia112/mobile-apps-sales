@@ -12,13 +12,13 @@ const Color kOffWhite = Color(0xFFF5F5F5);
 
 // text style
 final TextStyle kHeading5 =
-TextStyle(fontFamily: 'SansSerif', fontSize: 23, fontWeight: FontWeight.w400);
+TextStyle(fontFamily: 'SansSerif', fontSize: 22, fontWeight: FontWeight.w400);
 final TextStyle kHeading6 = TextStyle(
-    fontFamily: 'SansSerif', fontSize: 19, fontWeight: FontWeight.w500, letterSpacing: 0.15);
+    fontFamily: 'SansSerif', fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: 0.15);
 final TextStyle kSubtitle = TextStyle(
-    fontFamily: 'SansSerif', fontSize: 15, fontWeight: FontWeight.w400, letterSpacing: 0.15);
+    fontFamily: 'SansSerif', fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.15);
 final TextStyle kBodyText = TextStyle(
-    fontFamily: 'SansSerif', fontSize: 13, fontWeight: FontWeight.w400, letterSpacing: 0.25);
+    fontFamily: 'SansSerif', fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.25);
 
 const kColorScheme = ColorScheme(
   primary: kPrimaryBlue,
