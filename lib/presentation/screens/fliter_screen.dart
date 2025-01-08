@@ -108,6 +108,26 @@ class _FilterScreenState extends State<FilterScreen> {
             cursorColor: kPrimaryBlue,
           ),
           const SizedBox(height: 16),
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Batch Nomer',
+              hintStyle: kSubtitle.copyWith(color: Colors.black38),
+              prefixIcon: const Icon(Icons.batch_prediction_sharp, color: kPrimaryBlue),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: kLightGrey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: kPrimaryBlue),
+              ),
+              fillColor: kWhite.withOpacity(0.6),
+              filled: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+            ),
+            cursorColor: kPrimaryBlue,
+          ),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             decoration: InputDecoration(
               hintText: AppString.category,

@@ -8,3 +8,6 @@ String formatCurrency(String value) {
     return value;
   }
 }
+String formatTanggal(DateTime tanggal) {
+  return DateFormat('dd-MM-yyyy').format(tanggal);
+}

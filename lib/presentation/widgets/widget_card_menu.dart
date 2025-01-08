@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/model/menu_product_model.dart';
 import '../../data/provider/menu_product_provider.dart';
-import '../../utils/format_currency.dart';
+import '../../utils/format.dart';
 import '../screens/detail_product_screen.dart';
 class ProductList extends StatelessWidget {
   final bool isAll;
@@ -143,6 +143,20 @@ class ProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          product.batchNomer,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
@@ -166,17 +180,6 @@ class ProductCard extends StatelessWidget {
                       fontSize: 14,
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                      totalStock,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                 ],

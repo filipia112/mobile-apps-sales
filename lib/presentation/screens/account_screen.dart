@@ -17,14 +17,14 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserData();
+    });
   }
 
   Future<void> _loadUserData() async {
     try {
-      if (mounted) {
-        await Provider.of<AuthProvider>(context, listen: false).loadUserData();
-      }
+      await Provider.of<AuthProvider>(context, listen: false).loadUserData();
     } catch (e) {
       if (mounted) {
         final errorMessage = Provider.of<AuthProvider>(context, listen: false).errorMessage ?? "Gagal memuat data pengguna";
@@ -37,7 +37,6 @@ class _AccountScreenState extends State<AccountScreen> {
       }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +87,20 @@ class _AccountScreenState extends State<AccountScreen> {
                 ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  child: Image.asset(
+                    'lib/assets/images/salesman.png',
+                    width: double.infinity,
+                    height: 100,
+                    errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image, size: 100),
+                  ),
+                ),
+                const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

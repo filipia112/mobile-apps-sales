@@ -35,7 +35,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   AuthProvider() {
-    checkAuthStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkAuthStatus());
   }
 
   Future<void> checkAuthStatus() async {

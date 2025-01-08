@@ -9,6 +9,7 @@ class MenuProductModel {
   final DateTime tglKedaluwarsa;
   final String batchNomer;
   final String gambarPath;
+  final String deskripsi;
 
   MenuProductModel({
     required this.nmProduk,
@@ -19,6 +20,7 @@ class MenuProductModel {
     required this.tglKedaluwarsa,
     required this.batchNomer,
     required this.gambarPath,
+    required this.deskripsi
   });
 
   factory MenuProductModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class MenuProductModel {
       tglKedaluwarsa: DateFormat('yyyy-MM-dd').parse(json['tglKedaluwarsa'] ?? ''),
       batchNomer: json['batchNomer'] ?? '',
       gambarPath: json['gambarPath'] ?? '',
+      deskripsi: json['deskripsi'] ?? ''
     );
   }
 
@@ -51,6 +54,7 @@ class MenuProductModel {
       'tglKedaluwarsa': DateFormat('yyyy-MM-dd').format(tglKedaluwarsa),
       'batchNomer': batchNomer,
       'gambarPath': gambarPath,
+      'deskripsi': deskripsi
     };
   }
 }

@@ -36,11 +36,18 @@ dependencies:
   provider: ^6.0.5
   shared_preferences: ^2.3.5
   sqflite: ^2.4.1
-  path_provider: ^2.1.5
+  path: ^1.8.0
   intl: ^0.20.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  flutter_launcher_icons: ^0.14.2
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "lib/assets/images/pam-logo.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "lib/assets/images/pam-logo.png"
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +77,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - lib/assets/images/bangunan-PAM.jpg
+     - lib/assets/images/man.png
+     - lib/assets/images/salesman.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

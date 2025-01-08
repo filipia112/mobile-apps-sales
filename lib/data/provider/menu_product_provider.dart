@@ -32,7 +32,7 @@ class MenuProductProvider with ChangeNotifier {
         throw Exception("Token tidak ditemukan");
       }
 
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
       final response = await apiService.fetchMenuProduct(token);
       _menuProducts = response;
       _filteredProducts = response.data;

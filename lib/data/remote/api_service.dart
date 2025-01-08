@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:apps_sales/data/model/auth_model.dart';
 import 'package:apps_sales/data/model/auth_response_model.dart';
+import 'package:apps_sales/data/model/order_model.dart';
 import 'package:apps_sales/data/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'api_response.dart';
@@ -125,19 +126,21 @@ class ApiService {
       throw Exception('Gagal terhubung ke server');
     }
   }
-  Future<void> addOrder(String token) async {
+
+  Future<void> addOrder(String token, Order order) async {
     final response = await http.post(
       Uri.parse('$baseUrl/order'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
+      headers: <String, String> {
+       'Content-Type':'application/json',
+       'Authorization': 'Bearer $token',
       },
+      body: order.toJsonString()
     );
-
     if (response.statusCode != 200) {
-      throw Exception('Failed a create order');
+      throw Exception('Failed to create order');
     }
   }
+
   Future<void> addOrderDetail(String token) async {
     final response = await http.post(
       Uri.parse('$baseUrl/order/addDetailOrder'),

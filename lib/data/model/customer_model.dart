@@ -11,7 +11,10 @@ class CustomerModel {
   final DateTime? berlakuSIPA;
   final String noSipnap;
   final bool isVerified;
-  final String IdUser;
+  final String idUser;
+  final String wilayah;
+  final String noTelp;
+  final DateTime diubah;
 
   CustomerModel({
     required this.nmPelanggan,
@@ -24,7 +27,10 @@ class CustomerModel {
     this.berlakuSIPA,
     required this.noSipnap,
     required this.isVerified,
-    required this.IdUser
+    required this.idUser,
+    required this.wilayah,
+    required this.noTelp,
+    required this.diubah
   });
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
@@ -41,7 +47,10 @@ class CustomerModel {
       isVerified: json['isVerified'] is int
           ? json['isVerified'] == 1
           : json['isVerified'] ?? false,
-      IdUser: json ['IdUser'] ?? ''
+      idUser: json ['IdUser'] ?? '',
+      wilayah: json ['wilayah'] ?? '',
+      noTelp: json ['noTelp'] ?? '',
+      diubah: DateTime.parse(json['diubah']),
     );
   }
 
@@ -72,7 +81,10 @@ class CustomerModel {
           : null,
       'noSipnap': noSipnap,
       'isVerified': isVerified,
-      'IdUser': IdUser
+      'IdUser': idUser,
+      'wilayah': wilayah,
+      'noTelp': noTelp,
+      'diubah': diubah.toIso8601String()
     };
   }
 }

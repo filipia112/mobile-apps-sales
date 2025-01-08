@@ -29,7 +29,7 @@ class CustomerProvider with ChangeNotifier {
       }
       await Future.delayed(const Duration(seconds: 2));
       final response = await apiService.fetchCustomer(token);
-      final filteredCustomers = response.data.where((customer) => customer.IdUser == userId).toList();
+      final filteredCustomers = response.data.where((customer) => customer.idUser == userId).toList();
       _customers = ApiResponseCustomer(data: filteredCustomers);
     } catch (error) {
       errorMessage = "Gagal memuat data: $error";

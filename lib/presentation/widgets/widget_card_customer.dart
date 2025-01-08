@@ -70,8 +70,16 @@ class CustomerCard extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => CustomerDetailScreen(customer: customer),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => CustomerDetailScreen(customer: customer),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+                return SlideTransition(position: offsetAnimation, child: child);
+              },
             ),
           );
         },
@@ -89,7 +97,8 @@ class CustomerCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Text(
@@ -102,21 +111,10 @@ class CustomerCard extends StatelessWidget {
                         SizedBox(
                           width: 90,
                           height: 36,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isVerified ? Colors.lightGreen : Colors.grey,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: isVerified ? Colors.green : Colors.grey,
-                                  width: 2
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                isVerified ? 'Valid' : 'Belum Valid',
-                                style: kHeading6.copyWith(color: kWhite, fontSize: 14),
-                              ),
-                            ),
+                          child: Icon(
+                            customer.isVerified ? Icons.check_circle : Icons.warning,
+                            color: customer.isVerified ? Colors.green : Colors.red,
+                            size: 24,
                           ),
                         ),
                       ],
