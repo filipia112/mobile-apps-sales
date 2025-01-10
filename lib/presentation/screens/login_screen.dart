@@ -30,16 +30,14 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-
     setState(() {
       isLoading = true;
     });
-
     final authModel = AuthModel(username: username, passUser: password);
-
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final success = await authProvider.login(authModel);
+
       if (success) {
         final token = authProvider.token;
         final userId = authProvider.userId;
@@ -53,14 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } else {
-        _showSnackBar(
-          'Username atau Kata Sandi Anda salah.',
-          Colors.red,
-        );
+        final errorMessage = authProvider.errorMessage ?? 'Terjadi kesalahan. Coba lagi.';
+        _showSnackBar(errorMessage, Colors.red);
       }
     } catch (e) {
       _showSnackBar(
-        'Terjadi kesalahan, coba lagi nanti.',
+        'Kesalahan tak terduga: $e',
         Colors.red,
       );
     } finally {
@@ -70,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     }
+
   }
 
   void _showSnackBar(String message, Color backgroundColor) {

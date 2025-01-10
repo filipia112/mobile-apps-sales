@@ -69,7 +69,7 @@ class AuthProvider with ChangeNotifier {
       return true;
     } catch (e) {
       _isLoading = false;
-      errorMessage = "Gagal memuat data";
+      errorMessage = "Error : $e";
       return false;
     }
   }

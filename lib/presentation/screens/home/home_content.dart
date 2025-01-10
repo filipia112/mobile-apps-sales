@@ -8,6 +8,7 @@ import '../../widgets/widget_card_sales.dart';
 import '../../widgets/widget_loading.dart';
 import '../../widgets/widgets_search.dart';
 import '../all_menu_product.dart';
+import '../cart_screen.dart';
 import '../fliter_screen.dart';
 import '../order_screen.dart';
 class HomeContent extends StatelessWidget {
@@ -79,7 +80,7 @@ class HomeContent extends StatelessWidget {
                               context,
                               PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) {
-                                  return const OrderScreen();
+                                  return const CartScreen();
                                 },
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                   const begin = Offset(0.0, 1.0);
@@ -93,7 +94,7 @@ class HomeContent extends StatelessWidget {
                             );
                           },
                           child: const Icon(
-                            Icons.list_alt,
+                            Icons.shopping_cart,
                             color: kWhite,
                             size: 28,
                           ),

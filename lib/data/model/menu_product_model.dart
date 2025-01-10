@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 class MenuProductModel {
+  final String idMenuProduk;
   final String nmProduk;
   final String hargaDijual;
   final String kodePabrik;
@@ -12,6 +13,7 @@ class MenuProductModel {
   final String deskripsi;
 
   MenuProductModel({
+    required this.idMenuProduk,
     required this.nmProduk,
     required this.hargaDijual,
     required this.kodePabrik,
@@ -25,6 +27,7 @@ class MenuProductModel {
 
   factory MenuProductModel.fromJson(Map<String, dynamic> json) {
     return MenuProductModel(
+      idMenuProduk: json['IdMenuProduk'],
       nmProduk: json['nmProduk'] ?? '',
       hargaDijual: _parseString(json['hargaDijual']),
       kodePabrik: json['kodePabrik'] ?? '',
@@ -33,7 +36,7 @@ class MenuProductModel {
       tglKedaluwarsa: DateFormat('yyyy-MM-dd').parse(json['tglKedaluwarsa'] ?? ''),
       batchNomer: json['batchNomer'] ?? '',
       gambarPath: json['gambarPath'] ?? '',
-      deskripsi: json['deskripsi'] ?? ''
+      deskripsi: json['deskripsi'] ?? '',
     );
   }
 
@@ -46,6 +49,7 @@ class MenuProductModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'IdMenuProduk': idMenuProduk,
       'nmProduk': nmProduk,
       'hargaDijual': hargaDijual,
       'kodePabrik': kodePabrik,

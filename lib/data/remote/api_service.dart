@@ -154,4 +154,30 @@ class ApiService {
       throw Exception('Failed a create detail order');
     }
   }
+  Future<ApiResponseMenuProduct> getMenuProducts({
+    required String kodePabrik,
+    required String nmPabrik,
+    required String kategori,
+    required String token
+  }) async {
+    final String url = '$baseUrl/v1/filter/menu-product?kodePabrik=$kodePabrik&nmPabrik=$nmPabrik&kategori=$kategori';
+
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        final apiResponse = ApiResponseMenuProduct.fromJson(responseBody);
+
+        return apiResponse;
+      } else {
+        throw Exception('Failed to load menu products');
+      }
+    } catch (e) {
+      throw Exception('Error occurred while fetching menu products: $e');
+    }
+  }
 }

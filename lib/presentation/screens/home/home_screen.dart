@@ -1,5 +1,6 @@
 import 'package:apps_sales/presentation/screens/account_screen.dart';
 import 'package:apps_sales/presentation/screens/customer_screen.dart';
+import 'package:apps_sales/presentation/screens/order_screen.dart';
 import 'package:apps_sales/presentation/screens/stock_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const HomeContent(),
     const CustomerScreen(),
-    const StockTransactionScreen(),
+    const OrderScreen(),
     const AccountScreen()
   ];
 

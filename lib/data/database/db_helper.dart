@@ -26,18 +26,21 @@ class DBHelper {
 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE cart (
-        idCart TEXT PRIMARY KEY,
-        idPesananPelanggan TEXT,
-        idMenuProduk TEXT,
-        hargaPerUnit REAL,
-        jumlahUnit INTEGER,
-        totalHarga REAL,
-        isOrderDetail INTEGER DEFAULT 0
-      )
-    ''');
+    CREATE TABLE cart (
+      idCart TEXT PRIMARY KEY,
+      idMenuProduk TEXT, 
+      hargaPerUnit INTEGER,
+      jumlahUnit INTEGER,
+      totalHarga INTEGER,
+      gambarPath TEXT,
+      nmProduk TEXT,
+      deskripsi TEXT,
+      nmUnit TEXT,
+      kodePabrik TEXT,
+      isOrderDetail INTEGER DEFAULT 0
+    )
+  ''');
   }
-
   Future<int> insertCart(Cart cart) async {
     Database db = await instance.database;
     return await db.insert('cart', cart.toMap());
@@ -45,9 +48,17 @@ class DBHelper {
 
   Future<List<Cart>> getAllCarts() async {
     Database db = await instance.database;
-    final List<Map<String, dynamic>> maps = await db.query('cart');
-    return maps.map((map) => Cart.fromMap(map)).toList();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'cart',
+      where: 'isOrderDetail = ?',
+      whereArgs: [0],
+    );
+    return maps.map((map) {
+      return Cart.fromMap(map);
+    }).toList();
   }
+
+
 
   Future<int> updateIsOrderDetail(String idCart, bool isOrderDetail) async {
     Database db = await instance.database;

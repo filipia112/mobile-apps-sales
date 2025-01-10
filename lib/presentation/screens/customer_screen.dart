@@ -111,7 +111,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             right: 0,
             child: Container(
               height: 100,
-              color: kPrimaryBlue,
+              color: kWhite,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -125,7 +125,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           'Customer List',
                           style: kHeading5.copyWith(
                             fontSize: 20,
-                            color: kWhite,
+                            color: kPrimaryBlue,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

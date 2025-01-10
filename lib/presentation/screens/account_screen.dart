@@ -57,7 +57,7 @@ class _AccountScreenState extends State<AccountScreen> {
         children: [
           Container(
             height: 100,
-            color: kPrimaryBlue,
+            color: kWhite,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -71,7 +71,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         AppString.itemNameMenu4,
                         style: kHeading5.copyWith(
                           fontSize: 20,
-                          color: kWhite,
+                          color: kPrimaryBlue,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
