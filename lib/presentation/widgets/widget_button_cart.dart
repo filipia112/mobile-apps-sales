@@ -10,7 +10,6 @@ class CartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
     final double buttonHeight = MediaQuery.of(context).size.height * 0.07;
-
     return Center(
       child: SizedBox(
         width: buttonWidth,

@@ -1,162 +1,116 @@
-import 'package:apps_sales/common/constants.dart';
+import 'package:apps_sales/data/model/fetch_order_model.dart';
+import 'package:apps_sales/presentation/widgets/widget_loading.dart';
 import 'package:flutter/material.dart';
-class OrderCard extends StatelessWidget {
-  final String nameCustomer;
-  final String imageUrl;
-  final String productName;
-  final String namePabrik;
-  final String batchNomer;
-  final String totalPrice;
-
-  const OrderCard({
-    Key? key,
-    required this.nameCustomer,
-    required this.imageUrl,
-    required this.productName,
-    required this.namePabrik,
-    required this.batchNomer,
-    required this.totalPrice,
-  }) : super(key: key);
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../../common/constants.dart';
+import '../../data/provider/order_provider.dart';
+class OrderList extends StatelessWidget {
+  const OrderList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: kOffWhite,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  nameCustomer,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: kBodyText.copyWith(color: kLightGrey),
-                ),
-                const SizedBox(height: 4),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    imageUrl,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
+    var orderProvider = Provider.of<OrderProvider>(context);
 
-            const SizedBox(width: 8),
+    if (orderProvider.isLoading) {
+      return const Center(child: LoadingWidget());
+    }
 
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    namePabrik,
-                    style: kHeading6.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: kPrimaryBlue,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    productName,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: kHeading6.copyWith(fontSize: 12),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    totalPrice,
-                    style: kHeading6.copyWith(
-                      color: kPrimaryBlue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+    if (orderProvider.errorMessage != null) {
+      return Center(
+        child: Text(orderProvider.errorMessage!),
+      );
+    }
+
+    List<FetchOrder> displayedOrders = orderProvider.orders?.data.cast<FetchOrder>() ?? [];
+
+    if (displayedOrders.isEmpty) {
+      return const Center(
+        child: Text('Tidak ada data pesanan.'),
+      );
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: displayedOrders.length,
+      itemBuilder: (context, index) {
+        final order = displayedOrders[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: OrderCard(order: order),
+        );
+      },
     );
   }
 }
-class OrderList extends StatelessWidget {
-  final List<Map<String, String>> orders = [
-    {
-      'nameCustomer': 'RS XAD',
-      'imageUrl': 'https://via.placeholder.com/80',
-      'productName': 'Produk 1',
-      'batchNomer': '2B813H9001',
-      'pabrik': 'MARIN',
-      'totalPrice': 'Rp 10.000.000',
-    },
-    {
-      'nameCustomer': 'RS XAD',
-      'imageUrl': 'https://via.placeholder.com/80',
-      'productName': 'Produk 2',
-      'batchNomer': '2B813H9001',
-      'pabrik': 'PIM',
-      'totalPrice': 'Rp 10.000.000',
-    },
-    {
-      'nameCustomer': 'RS XAD',
-      'imageUrl': 'https://via.placeholder.com/80',
-      'productName': 'Produk 3',
-      'batchNomer': '2B813H9001',
-      'pabrik': 'Otsuka',
-      'totalPrice': 'Rp 1.400.000',
-    },
-    {
-      'nameCustomer': 'RS XAD',
-      'imageUrl': 'https://via.placeholder.com/80',
-      'productName': 'Produk 3',
-      'batchNomer': '2B813H9001',
-      'pabrik': 'Otsuka',
-      'totalPrice': 'Rp 1.400.000',
-    },
-    {
-      'nameCustomer': 'RS XAD',
-      'imageUrl': 'https://via.placeholder.com/80',
-      'productName': 'Produk 3',
-      'batchNomer': '2B813H9001',
-      'pabrik': 'Otsuka',
-      'totalPrice': 'Rp 1.400.000',
-    },
-    {
-      'nameCustomer': 'RS XAD',
-      'imageUrl': 'https://via.placeholder.com/80',
-      'productName': 'Produk 3',
-      'batchNomer': '2B813H9001',
-      'pabrik': 'Otsuka',
-      'totalPrice': 'Rp 1.400.000',
-    },
-  ];
 
-  final bool isAll;
-  OrderList({super.key, this.isAll = false});
-
+class OrderCard extends StatelessWidget {
+  final FetchOrder order;
+  const OrderCard({super.key, required this.order});
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        return OrderCard(
-          nameCustomer: orders[index]['nameCustomer']!,
-          imageUrl: orders[index]['imageUrl']!,
-          productName: orders[index]['productName']!,
-          namePabrik: orders[index]['pabrik']!,
-          batchNomer: orders[index]['batchNomer']!,
-          totalPrice: orders[index]['totalPrice']!,
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: GestureDetector(
+        onTap: () {
+          // Implement action when card is tapped
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: kOffWhite,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            order.nmPelanggan,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: kBodyText.copyWith(color: kLightGrey),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 36,
+                          child: Icon(
+                            order.isVerified ? Icons.check_circle : Icons.warning,
+                            color: order.isVerified ? Colors.green : Colors.red,
+                            size: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      order.noPesanan,
+                      style: kHeading6.copyWith(color: kPrimaryBlue, fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      order.dibuat != null
+                          ? DateFormat("dd/MM/yyyy").format(order.dibuat.toLocal())
+                          : "Tidak ada data",
+                      style: kSubtitle.copyWith(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

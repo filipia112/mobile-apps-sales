@@ -26,6 +26,17 @@ class _CustomerScreenState extends State<CustomerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kWhite,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Daftar Customer',
+          style: kHeading5.copyWith(
+            color: kPrimaryBlue,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        backgroundColor: kWhite,
+      ),
       body: Stack(
         children: [
           Consumer<CustomerProvider>(builder: (context, customerProvider, child) {
@@ -105,37 +116,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
               ),
             );
           }),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 100,
-              color: kWhite,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Customer List',
-                          style: kHeading5.copyWith(
-                            fontSize: 20,
-                            color: kPrimaryBlue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );

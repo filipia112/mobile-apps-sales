@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../common/constants.dart';
@@ -11,8 +10,18 @@ class CustomerDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kWhite,
-      appBar: AppBar(title: const Text('Detail Customer'),
+      appBar: AppBar(
+        title: Text(
+          'Rincian Pelanggan',
+          style: kHeading5.copyWith(
+            color: kPrimaryBlue,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: kWhite,
+        iconTheme: const IconThemeData(
+          color: kPrimaryBlue,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -151,6 +160,15 @@ class CustomerDetailScreen extends StatelessWidget {
                           ? "Berlaku Izin Sarana: ${DateFormat('yyyy/MM/dd').format(customer.berlakuSIPA!)}"
                           : "Berlaku Izin Sarana: Tidak tersedia",
                       style: kSubtitle.copyWith(color: Colors.black),
+                    ),
+                    Text(
+                      'Nama SIPNAP',
+                      style: kSubtitle.copyWith(color: Colors.black54),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      customer.noSipnap,
+                      style: kBodyText.copyWith(color: Colors.black),
                     ),
                     const SizedBox(height: 20),
                     Center(

@@ -14,6 +14,7 @@ class OrderDetail {
     required this.hargaPerunit,
     required this.totalHarga
   });
+
   Map<String, String> toJson(){
     return {
       'IdPesananPelanggan' : idPesananPelanggan,

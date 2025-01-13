@@ -7,6 +7,7 @@ import 'common/app_string.dart';
 import 'data/provider/auth_provider.dart';
 import 'data/provider/customer_provider.dart';
 import 'data/provider/menu_product_provider.dart';
+import 'data/provider/order_detail_provider.dart';
 void main() {
   runApp(
     MultiProvider(
@@ -16,6 +17,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => MenuProductProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (context) => OrderDetailProvider()),
       ],
       child: const MyApp(),
     ),

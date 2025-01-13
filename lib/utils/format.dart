@@ -11,3 +11,8 @@ String formatCurrency(String value) {
 String formatTanggal(DateTime tanggal) {
   return DateFormat('dd-MM-yyyy').format(tanggal);
 }
+int calculateDaysRemaining(String tglKedaluwarsa) {
+  final DateTime today = DateTime.now();
+  final DateTime expiryDate = DateTime.parse(tglKedaluwarsa);
+  return expiryDate.difference(today).inDays;
+}

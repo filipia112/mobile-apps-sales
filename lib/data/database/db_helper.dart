@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../utils/shared_preferences.dart';
 import '../model/cart_model.dart';
 
 class DBHelper {
@@ -28,6 +29,7 @@ class DBHelper {
     await db.execute('''
     CREATE TABLE cart (
       idCart TEXT PRIMARY KEY,
+      idUser TEXT,
       idMenuProduk TEXT, 
       hargaPerUnit INTEGER,
       jumlahUnit INTEGER,
@@ -47,18 +49,17 @@ class DBHelper {
   }
 
   Future<List<Cart>> getAllCarts() async {
+    final userId = await SharedPrefHelper.getUserId();
     Database db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'cart',
-      where: 'isOrderDetail = ?',
-      whereArgs: [0],
+      where: 'isOrderDetail = ? AND idUser = ?',
+      whereArgs: [0, userId],
     );
     return maps.map((map) {
       return Cart.fromMap(map);
     }).toList();
   }
-
-
 
   Future<int> updateIsOrderDetail(String idCart, bool isOrderDetail) async {
     Database db = await instance.database;
@@ -80,11 +81,12 @@ class DBHelper {
     );
   }
   Future<void> clearCart() async {
+    final userId = await SharedPrefHelper.getUserId();
     Database db = await instance.database;
     await db.delete(
       'cart',
-      where: 'isOrderDetail = ?',
-      whereArgs: [0],
+      where: 'isOrderDetail = ? AND idUser = ?',
+      whereArgs: [0, userId],
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:apps_sales/data/model/auth_model.dart';
 import 'package:apps_sales/data/model/auth_response_model.dart';
-import 'package:apps_sales/data/model/order_model.dart';
+import 'package:apps_sales/data/model/add_order_model.dart';
 import 'package:apps_sales/data/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'api_response.dart';
@@ -127,33 +127,54 @@ class ApiService {
     }
   }
 
-  Future<void> addOrder(String token, Order order) async {
+  Future<String?> addOrder(String token, Order order) async {
     final response = await http.post(
       Uri.parse('$baseUrl/order'),
       headers: <String, String> {
-       'Content-Type':'application/json',
-       'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
-      body: order.toJsonString()
+      body: order.toJsonString(),
     );
-    if (response.statusCode != 200) {
-      throw Exception('Failed to create order');
+
+    if (response.statusCode == 201) {
+      try {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData.containsKey('data') && responseData['data'] != null) {
+          String orderId = responseData['data']['id'] ?? '';
+          if (orderId.isNotEmpty) {
+            return orderId;
+          } else {
+            throw Exception('Order ID not found in response');
+          }
+        } else {
+          throw Exception('Data field not found in response');
+        }
+      } catch (e) {
+        throw Exception('Error parsing response: $e');
+      }
+    } else {
+      throw Exception('Failed to create order. Status code: ${response.statusCode}');
     }
   }
 
-  Future<void> addOrderDetail(String token) async {
+  Future<void> addOrderDetail(String token, List<Map<String, dynamic>> orderDetails) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/order/addDetailOrder'),
+      Uri.parse('$baseUrl/order/addDetailOrderMultiple'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
+      body: json.encode({
+        'orderDetails': orderDetails,
+      }),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed a create detail order');
+      throw Exception('Failed to create detail order: ${response.body}');
     }
   }
+
   Future<ApiResponseMenuProduct> getMenuProducts({
     required String kodePabrik,
     required String nmPabrik,
@@ -178,6 +199,29 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Error occurred while fetching menu products: $e');
+    }
+  }
+  Future<ApiResponseOrderDetail> fetchDetailOrders({
+    required String idPesananPelanggan,
+    required String token
+  }) async {
+    final String url = '$baseUrl/v1/order/getAllDetailOrder/$idPesananPelanggan';
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        final apiResponse = ApiResponseOrderDetail.fromJson(responseBody);
+
+        return apiResponse;
+      } else {
+        throw Exception('Failed to load menu products');
+      }
+    } catch (e) {
+      throw Exception('Error occurred while fetching menu detail: $e');
     }
   }
 }

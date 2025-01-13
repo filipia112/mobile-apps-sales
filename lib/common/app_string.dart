@@ -25,6 +25,7 @@ class AppString {
   static const String itemNameMenu2 = "Pelanggan";
   static const String itemNameMenu3 = "Stok";
   static const String itemNameMenu4 = "Akun";
+  static const String order = "Pesanan";
   static const String detailListProduct = "Selengkapnya";
 
   static const String stockTransaction = "Transaksi Stok";
@@ -32,5 +33,9 @@ class AppString {
   static const String stockIn = "Stok Masuk";
   static const String backHome = "Kembali";
 
-  static const String order = "Pesanan";
+
+  // Loading Widget
+  static const String hintTextSearch = "Cari Produk disini";
+  // Customer Screen
+  static const String listCustomer = "Daftar Customer";
 }

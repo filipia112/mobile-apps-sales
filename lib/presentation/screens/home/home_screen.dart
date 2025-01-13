@@ -1,7 +1,6 @@
 import 'package:apps_sales/presentation/screens/account_screen.dart';
 import 'package:apps_sales/presentation/screens/customer_screen.dart';
 import 'package:apps_sales/presentation/screens/order_screen.dart';
-import 'package:apps_sales/presentation/screens/stock_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../common/app_string.dart';
@@ -75,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             BottomNavigationBarItem(
               icon: _currentIndex == 2
-                  ? _buildActiveItem(Icons.paste, AppString.itemNameMenu3, navBarHeight)
+                  ? _buildActiveItem(Icons.paste, 'Pesanan', navBarHeight)
                   : const Icon(Icons.paste),
               label: '',
             ),

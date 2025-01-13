@@ -1,3 +1,4 @@
+import 'package:apps_sales/common/app_string.dart';
 import 'package:flutter/material.dart';
 import '../../common/constants.dart';
 import '../screens/all_menu_product.dart';
@@ -11,7 +12,7 @@ class SearchField extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        hintText: 'Cari Menu Product disini...',
+        hintText: AppString.hintTextSearch,
         hintStyle: kSubtitle.copyWith(color: Colors.black38),
         prefixIcon: const Icon(Icons.search, color: kPrimaryBlue),
         enabledBorder: OutlineInputBorder(
@@ -62,7 +63,7 @@ class SearchFieldHome extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       decoration: InputDecoration(
-        hintText: 'Cari Menu Product disini...',
+        hintText: AppString.hintTextSearch,
         hintStyle: kSubtitle.copyWith(color: Colors.black38),
         prefixIcon: const Icon(Icons.search, color: kPrimaryBlue),
         enabledBorder: OutlineInputBorder(

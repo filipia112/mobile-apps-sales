@@ -1,5 +1,6 @@
 class Cart {
   String idCart;
+  String idUser;
   String idMenuProduk;
   int hargaPerUnit;
   int jumlahUnit;
@@ -13,6 +14,7 @@ class Cart {
 
   Cart({
     required this.idCart,
+    required this.idUser,
     required this.idMenuProduk,
     required this.hargaPerUnit,
     required this.jumlahUnit,
@@ -26,6 +28,7 @@ class Cart {
   });
   factory Cart.fromMap(Map<String, dynamic> map) {
     return Cart(
+      idUser: map['idUser'],
       idCart: map['idCart'],
       idMenuProduk: map['idMenuProduk'],
       hargaPerUnit: map['hargaPerUnit'],
@@ -41,6 +44,7 @@ class Cart {
   }
   Map<String, dynamic> toMap() {
     return {
+      'idUser': idUser,
       'idCart': idCart,
       'idMenuProduk': idMenuProduk,
       'hargaPerUnit': hargaPerUnit,

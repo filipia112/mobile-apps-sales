@@ -1,7 +1,9 @@
+import 'package:apps_sales/data/model/fetch_order_detail_model.dart';
 import 'package:apps_sales/data/model/menu_product_model.dart';
 import 'package:apps_sales/data/model/user_model.dart';
 
 import '../model/customer_model.dart';
+import '../model/fetch_order_model.dart';
 
 class ApiResponseUser {
   final UserModel data;
@@ -65,16 +67,38 @@ class ApiResponseCustomer {
   }
 }
 class ApiResponseOrder {
-  final List<CustomerModel> data;
+  final List<FetchOrder> data;
+
   ApiResponseOrder({required this.data});
+
   factory ApiResponseOrder.fromJson(Map<String, dynamic> json) {
     var list = json['data'] as List?;
-    List<CustomerModel> customerList = [];
+    List<FetchOrder> fetchOrderList = [];
     if (list != null) {
-      customerList = list.map((item) => CustomerModel.fromJson(item)).toList();
+      fetchOrderList = list.map((item) => FetchOrder.fromJson(item)).toList();
     }
     return ApiResponseOrder(
-      data: customerList,
+      data: fetchOrderList,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'data': data.map((item) => item.toJson()).toList(),
+    };
+  }
+}
+class ApiResponseOrderDetail {
+  final List<FetchOrderDetail> data;
+  ApiResponseOrderDetail({required this.data});
+  factory ApiResponseOrderDetail.fromJson(Map<String, dynamic> json) {
+    var list = json['data'] as List?;
+    List<FetchOrderDetail> fetchOrderDetailList = [];
+    if (list != null) {
+      fetchOrderDetailList = list.map((item) => FetchOrderDetail.fromJson(item)).toList();
+    }
+    return ApiResponseOrderDetail(
+      data: fetchOrderDetailList,
     );
   }
 

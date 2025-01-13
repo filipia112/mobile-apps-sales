@@ -6,8 +6,10 @@ import '../remote/api_service.dart';
 class CustomerProvider with ChangeNotifier {
   final ApiService apiService = ApiService();
   ApiResponseCustomer? _customers;
+
   bool _isLoading = false;
   String? _errorMessage;
+
   ApiResponseCustomer? get customers => _customers;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -32,7 +34,7 @@ class CustomerProvider with ChangeNotifier {
       final filteredCustomers = response.data.where((customer) => customer.idUser == userId).toList();
       _customers = ApiResponseCustomer(data: filteredCustomers);
     } catch (error) {
-      errorMessage = "Gagal memuat data: $error";
+      errorMessage = "Gagal memuat data";
     } finally {
       _isLoading = false;
       notifyListeners();

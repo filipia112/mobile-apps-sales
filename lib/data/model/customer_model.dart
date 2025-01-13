@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 class CustomerModel {
+  final String idPelanggan;
   final String nmPelanggan;
   final String noPelanggan;
   final String alamatPelanggan;
@@ -17,6 +18,7 @@ class CustomerModel {
   final DateTime diubah;
 
   CustomerModel({
+    required this.idPelanggan,
     required this.nmPelanggan,
     required this.noPelanggan,
     required this.alamatPelanggan,
@@ -35,6 +37,7 @@ class CustomerModel {
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
     return CustomerModel(
+      idPelanggan: json['IdPelanggan'] ?? '',
       nmPelanggan: json['nmPelanggan'] ?? '',
       noPelanggan: json['noPelanggan'] ?? '',
       alamatPelanggan: json['alamatPelanggan'] ?? '',
@@ -67,6 +70,7 @@ class CustomerModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'IdPelanggan': idPelanggan,
       'nmPelanggan': nmPelanggan,
       'noPelanggan': noPelanggan,
       'alamatPelanggan': alamatPelanggan,

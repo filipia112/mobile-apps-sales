@@ -8,14 +8,35 @@ class CartProvider extends ChangeNotifier {
   String _errorMessage = '';
   bool _isLoading = false;
 
+  Set<String> _selectedItemIds = {};
+
   List<Cart> get cartItems => _cartItems;
   String get errorMessage => _errorMessage;
   bool get isLoading => _isLoading;
-
+  Set<String> get selectedItemIds => _selectedItemIds;
   int get totalItemCount => _cartItems.length;
 
   void _setLoading(bool loading) {
     _isLoading = loading;
+    notifyListeners();
+  }
+
+  int get totalSelectedItems {
+    int total = 0;
+    for (var cartItem in _cartItems) {
+      if (_selectedItemIds.contains(cartItem.idCart)) {
+        total += cartItem.totalHarga;
+      }
+    }
+    return total;
+  }
+
+  void toggleItemSelection(String idCart) {
+    if (_selectedItemIds.contains(idCart)) {
+      _selectedItemIds.remove(idCart);
+    } else {
+      _selectedItemIds.add(idCart);
+    }
     notifyListeners();
   }
 
@@ -30,7 +51,7 @@ class CartProvider extends ChangeNotifier {
       _cartItems = await DBHelper.instance.getAllCarts();
       _setErrorMessage('');
     } catch (e) {
-      _handleError('Failed to load carts: ${e.toString()}');
+      _handleError('Failed to load carts');
     } finally {
       _setLoading(false);
     }
@@ -43,7 +64,7 @@ class CartProvider extends ChangeNotifier {
       _cartItems.add(cart);
       _setErrorMessage('');
     } catch (e) {
-      _handleError('Failed to add cart: ${e.toString()}');
+      _handleError('Failed to add cart');
     } finally {
       _setLoading(false);
     }
@@ -56,7 +77,7 @@ class CartProvider extends ChangeNotifier {
       _cartItems = await DBHelper.instance.getAllCarts();
       _setErrorMessage('');
     } catch (e) {
-      _handleError('Failed to update order detail: ${e.toString()}');
+      _handleError('Failed to update order detail');
     } finally {
       _setLoading(false);
     }
@@ -69,7 +90,7 @@ class CartProvider extends ChangeNotifier {
       _cartItems.removeWhere((cart) => cart.idCart == idCart);
       _setErrorMessage('');
     } catch (e) {
-      _handleError('Failed to remove cart: ${e.toString()}');
+      _handleError('Failed to remove cart');
     } finally {
       _setLoading(false);
     }
@@ -82,7 +103,7 @@ class CartProvider extends ChangeNotifier {
       _cartItems.removeWhere((cart) => !cart.isOrderDetail);
       _setErrorMessage('');
     } catch (e) {
-      _handleError('Failed to clear cart: ${e.toString()}');
+      _handleError('Failed to clear cart');
     } finally {
       _setLoading(false);
     }
@@ -92,3 +113,4 @@ class CartProvider extends ChangeNotifier {
     _setErrorMessage(message);
   }
 }
+

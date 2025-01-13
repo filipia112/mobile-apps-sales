@@ -41,6 +41,17 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kWhite,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Akun Pengguna',
+          style: kHeading5.copyWith(
+              color: kPrimaryBlue,
+              fontWeight: FontWeight.bold
+          ),
+        ),
+        backgroundColor: kWhite,
+      ),
       body: Stack(
         children: [
           _buildContent(context),
@@ -55,32 +66,6 @@ class _AccountScreenState extends State<AccountScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 100,
-            color: kWhite,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppString.itemNameMenu4,
-                        style: kHeading5.copyWith(
-                          fontSize: 20,
-                          color: kPrimaryBlue,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: authProvider.nmUser != null

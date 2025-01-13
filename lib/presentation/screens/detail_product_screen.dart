@@ -1,11 +1,11 @@
 import 'package:apps_sales/common/constants.dart';
-import 'package:apps_sales/presentation/widgets/widget_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/model/cart_model.dart';
 import '../../data/model/menu_product_model.dart';
 import '../../data/provider/cart_provider.dart';
 import '../../utils/format.dart';
+import '../../utils/shared_preferences.dart';
 import '../widgets/widget_button_cart.dart';
 import 'cart_screen.dart';
 
@@ -19,14 +19,15 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  final ValueNotifier<int> _jumlahUnitNotifier = ValueNotifier<int>(1);
+  final ValueNotifier<int> _jumlahUnitNotifier = ValueNotifier<int>(10);
   final ValueNotifier<int> _totalHargaNotifier = ValueNotifier<int>(0);
-
+  late int daysRemaining;
   @override
   void initState() {
     super.initState();
     int hargaPerUnit = int.tryParse(widget.product.hargaDijual) ?? 0;
     _totalHargaNotifier.value = hargaPerUnit * _jumlahUnitNotifier.value;
+    daysRemaining = calculateDaysRemaining(widget.product.tglKedaluwarsa.toString());
   }
 
   void _updateTotalHarga(int jumlah) {
@@ -42,18 +43,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kOffWhite,
+      backgroundColor: kWhite,
       appBar: AppBar(
         title: Text(
-          'Detail Produk',
-          style: kHeading5.copyWith(fontWeight: FontWeight.bold, color: kWhite),
+          'Rincian Produk',
+          style: kHeading5.copyWith(
+            color: kPrimaryBlue,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: kPrimaryBlue,
-        foregroundColor: kWhite,
+        backgroundColor: kWhite,
+        iconTheme: const IconThemeData(
+          color: kPrimaryBlue,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -201,6 +206,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                             ],
                           ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Exp.Date',
+                                style: kHeading6.copyWith(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "${formatTanggal(widget.product.tglKedaluwarsa)} - Sisa $daysRemaining hari",
+                                style: kSubtitle.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.8,
+                                  color: Colors.black38,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -304,7 +329,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                               onPressed: () {
                                                 int stok = int.tryParse(widget.product.jumlahStok) ?? 0;
                                                 if (_jumlahUnitNotifier.value < stok) {
-                                                  _updateTotalHarga(_jumlahUnitNotifier.value + 1);
+                                                  _updateTotalHarga(_jumlahUnitNotifier.value + 5);
                                                 }
                                               },
                                             ),
@@ -354,8 +379,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                                         try {
                                           int hargaPerUnit = int.tryParse(widget.product.hargaDijual) ?? 0;
+                                          final userId =  await SharedPrefHelper.getUserId();
                                           final cart = Cart(
                                             idCart: UniqueKey().toString(),
+                                            idUser: userId.toString(),
                                             idMenuProduk: widget.product.idMenuProduk,
                                             hargaPerUnit: hargaPerUnit,
                                             jumlahUnit: _jumlahUnitNotifier.value,
